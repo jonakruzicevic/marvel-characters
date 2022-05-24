@@ -1,23 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+//styles
+import "./App.css";
+//components
+import MarvelHeaderLogo from "./components/MarvelHeaderLogo";
+import Characters from "./components/Characters";
+import SearchBar from "./components/SearchBar";
+
+const hash = "d2e8c0743317a170e32747dc6fa5501b";
 
 function App() {
+  const [characters, setCharacters] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (query === "") {
+        if (
+          localStorage.getItem("favorites") === "[]" ||
+          !localStorage.getItem("favorites")
+        ) {
+          localStorage.setItem("favorites", "[]");
+          const result = await axios(
+            `http://gateway.marvel.com/v1/public/characters?ts=1&apikey=79b81a7dc98c221d00e05eeefe71323e&hash=${hash}`
+          );
+          console.log(result.data.data.results);
+          setCharacters(result.data.data.results);
+          setLoading(false);
+        } else {
+          let favorite = JSON.parse(localStorage.getItem("favorites"));
+          setCharacters(favorite);
+          setLoading(false);
+        }
+      } else {
+        const result = await axios(
+          `http://gateway.marvel.com/v1/public/characters?nameStartsWith=${query}&ts=1&apikey=79b81a7dc98c221d00e05eeefe71323e&hash=${hash}`
+        );
+        console.log(result.data.data.results);
+        setCharacters(result.data.data.results);
+        setLoading(false);
+      }
+    };
+
+    fetch();
+  }, [query]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <MarvelHeaderLogo />
+      <SearchBar search={(myQuery) => setQuery(myQuery)}></SearchBar>
+      <Characters items={characters} isLoading={isLoading} />
+      <br />
+      <p>
+        <b>Data provided by Marvel. © 2014 Marvel</b>
+      </p>
     </div>
   );
 }
