@@ -7,7 +7,7 @@ import MarvelHeaderLogo from "./components/MarvelHeaderLogo";
 import Characters from "./components/Characters";
 import SearchBar from "./components/SearchBar";
 
-const hash = "d2e8c0743317a170e32747dc6fa5501b";
+const hash = process.env.REACT_APP_KEY;
 
 function App() {
   const [characters, setCharacters] = useState([]);
