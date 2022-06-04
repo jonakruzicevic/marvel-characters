@@ -7,8 +7,6 @@ import MarvelHeaderLogo from "./components/MarvelHeaderLogo";
 import Characters from "./components/Characters";
 import SearchBar from "./components/SearchBar";
 
-const hash = process.env.REACT_APP_KEY;
-
 function App() {
   const [characters, setCharacters] = useState([]);
   const [isLoading, setLoading] = useState(true);
@@ -23,7 +21,7 @@ function App() {
         ) {
           localStorage.setItem("favorites", "[]");
           const result = await axios(
-            `http://gateway.marvel.com/v1/public/characters?ts=1&apikey=79b81a7dc98c221d00e05eeefe71323e&hash=${hash}`
+            `http://gateway.marvel.com/v1/public/characters?ts=1&apikey=79b81a7dc98c221d00e05eeefe71323e&hash=${process.env.REACT_APP_KEY}`
           );
           console.log(result.data.data.results);
           setCharacters(result.data.data.results);
@@ -35,7 +33,7 @@ function App() {
         }
       } else {
         const result = await axios(
-          `http://gateway.marvel.com/v1/public/characters?nameStartsWith=${query}&ts=1&apikey=79b81a7dc98c221d00e05eeefe71323e&hash=${hash}`
+          `http://gateway.marvel.com/v1/public/characters?nameStartsWith=${query}&ts=1&apikey=79b81a7dc98c221d00e05eeefe71323e&hash=${process.env.REACT_APP_KEY}`
         );
         console.log(result.data.data.results);
         setCharacters(result.data.data.results);
